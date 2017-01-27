@@ -70,9 +70,9 @@ class TCP{
 
 		byte[] tab = new byte[len];
 
-		int wRead = 0;
-		while (wRead < len) {
-			wRead += dis.read(tab, wRead, len - wRead);
+		int read = 0;
+		while (read < len) {
+			read += dis.read(tab, read, len - read);
 		}
 
 		return new JobKey(tab);
@@ -84,18 +84,46 @@ class TCP{
 	 * @param len th len of the input stream
 	 * @throws IOException
 	 */
+//	static void writeData(Socket soc, InputStream fis, int len) throws IOException {
+//	//----------------------------------------------------------------------------- A COMPLETER
+//	}
 	static void writeData(Socket soc, InputStream fis, int len) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
-	}
+        byte[] buffer = new byte[MAX_LEN_BUFFER];
+        OutputStream os = soc.getOutputStream();
+        DataOutputStream dos = new DataOutputStream(os);
+        int sent = 0;
+        int read = 0;
+        dos.writeInt(len);
+        while(sent < len){
+            read = fis.read(buffer);
+            sent += read;
+            dos.write(buffer,0,read);
+        }
+}
 	/**
 	 * 
 	 * @param soc th socket
 	 * @return string data 
 	 * @throws IOException
 	 */
+//	static String readData(Socket soc) throws IOException {
+//	//----------------------------------------------------------------------------- A COMPLETER
+//	}
 	static String readData(Socket soc) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
-	}
+        byte[] buffer = new byte[MAX_LEN_BUFFER];
+        InputStream is = soc.getInputStream();
+        DataInputStream dis = new DataInputStream(is);
+        String file_content = "";
+        int read = 0;
+        int size;
+        int len = dis.readInt();
+        while(read < len) {
+            size = dis.read(buffer);
+            read += size;
+            file_content += new String(buffer,0,size);
+        }
+        return file_content;
+}
 	/**
 	 * 
 	 * @param soc the socket

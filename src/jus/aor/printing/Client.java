@@ -86,13 +86,22 @@ public class Client {
 			soc = new Socket(host,port);
 			
 			TCP.writeProtocole(soc, QUERY_PRINT);
+			JobKey jk = new JobKey();
+			TCP.writeJobKey(soc, jk);
+			
+			 TCP.writeData(soc, fis, (int) f.length());
 			
 			ret = TCP.readProtocole(soc);
 			if(ret == REPLY_PRINT_OK) {
 			
-				 {log.log(Level.INFO_3,"QUERY_PRINT_OK recu");
-				 //GUI.addPrintList(reponse);}
+				 log.log(Level.INFO_3,"QUERY_PRINT_OK recu");
+				 JobKey retjk = TCP.readJobKey(soc);
+				 
+				 if (jk.equals(retjk)) {
+					{log.log(Level.INFO_3,"Client.QueryPrint.Processing",retjk);
+					GUI.addPrintList(retjk);}
 				 }
+
 			} else log.log(Level.WARNING,"Client.QueryPrint.Failed",ret.toString());
 		}catch(NumberFormatException e){
 			log.log(Level.SEVERE,"Client.QueryPrint.Port.Error",e.getMessage());
@@ -107,10 +116,16 @@ public class Client {
 	 * @param f le fichier à imprimer
 	 * @param n nombre de requêtes d'impression à faire
 	 */
-	public void queryPrint(final File f,int n) {
-		for (int i =0 ; i < n ; i++) {
-			onePrint(f);
-		}
+	 public void queryPrint(final File f,int n) {
+	        for(int i = 0; i < n; i++){
+	            Thread t = new Thread(new Runnable() {
+	                @Override
+	                public void run() {
+	                    onePrint(f);
+	                }
+	            });
+	            t.start();
+	        }
 	}
 	/**
 	 * protocole du server status

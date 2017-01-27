@@ -43,7 +43,7 @@ public class JobKey {
 	 * @return le tableau de bytes de la forme textuelle
 	 */
 	public byte[] marshal() {
-		//----------------------------------------------------------------------------- A COMPLETER
+		 return this.toString().getBytes();
 	}
 	/**
 	 * la forme textuelle : "<<b>serverId</b>>¤<<b>date</b>>"

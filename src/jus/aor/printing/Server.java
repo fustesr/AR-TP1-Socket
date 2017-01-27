@@ -57,9 +57,14 @@ public class Server {
 					log.log(Level.INFO_1,"Lecture de notif");
 					
 					protocole = TCP.readProtocole(soc);
+					JobKey jk = TCP.readJobKey(soc);
 					
 					if (protocole == QUERY_PRINT){
+						String file_content = TCP.readData(soc);
+						log.log(Level.INFO_1,file_content);
+						 
 						TCP.writeProtocole(soc,REPLY_PRINT_OK);
+						TCP.writeJobKey(soc, jk);
 					} 
 					else {
 						TCP.writeProtocole(soc,REPLY_UNKNOWN_NOTIFICATION);
@@ -106,7 +111,7 @@ public class Server {
 	 */
 	public void stop(){
 		// Methode pas encore faite
-		alive = false;	
+		//alive = false;	
 	}
 	/**
 	 * 

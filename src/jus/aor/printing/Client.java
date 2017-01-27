@@ -82,13 +82,17 @@ public class Client {
 	private void onePrint(File f){
 		Socket soc = null;
 		try(InputStream fis = new FileInputStream(f)){
-			Notification ret;
-			//-------------------------------------------------------------------------- A COMPLETER
+			Notification ret = null;
+			soc = new Socket(host,port);
+			
+			TCP.writeProtocole(soc, QUERY_PRINT);
+			
+			ret = TCP.readProtocole(soc);
 			if(ret == REPLY_PRINT_OK) {
-				//------------------------------------------------------------------------ A COMPLETER
-				// Dans le cas où tout est correct on ajoute le job à la liste des encours.
-				//	{log.log(Level.INFO_3,"Client.QueryPrint.Processing",key);
-				//	GUI.addPrintList(key);}
+			
+				 {log.log(Level.INFO_3,"QUERY_PRINT_OK recu");
+				 //GUI.addPrintList(reponse);}
+				 }
 			} else log.log(Level.WARNING,"Client.QueryPrint.Failed",ret.toString());
 		}catch(NumberFormatException e){
 			log.log(Level.SEVERE,"Client.QueryPrint.Port.Error",e.getMessage());
@@ -104,7 +108,9 @@ public class Client {
 	 * @param n nombre de requêtes d'impression à faire
 	 */
 	public void queryPrint(final File f,int n) {
-		//-------------------------------------------------------------------------- A COMPLETER
+		for (int i =0 ; i < n ; i++) {
+			onePrint(f);
+		}
 	}
 	/**
 	 * protocole du server status

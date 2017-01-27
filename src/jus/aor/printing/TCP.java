@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 /**
@@ -24,7 +25,9 @@ class TCP{
 	 * @throws IOException
 	 */
 	static void writeProtocole(Socket soc,  Notification not) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
+        OutputStream os = soc.getOutputStream();
+        DataOutputStream dos = new DataOutputStream(os);
+        dos.writeInt(not.ordinal());
 	}
 	/**
 	 * 
@@ -33,7 +36,12 @@ class TCP{
 	 * @throws IOException
 	 */
 	static Notification readProtocole(Socket soc) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
+        InputStream is = soc.getInputStream();
+        DataInputStream dis = new DataInputStream(is);
+
+        int not = dis.readInt();
+        
+        return Notification.values()[not];
 	}
 	/**
 	 * 
@@ -42,7 +50,12 @@ class TCP{
 	 * @throws IOException
 	 */
 	static void writeJobKey(Socket soc, JobKey key) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
+        OutputStream os = soc.getOutputStream();
+        DataOutputStream dos = new DataOutputStream(os);
+        
+        byte[] tab = key.marshal();
+        dos.writeInt(tab.length);
+        dos.write(tab);
 	}
 	/**
 	 * 
@@ -51,7 +64,18 @@ class TCP{
 	 * @throws IOException
 	 */
 	static JobKey readJobKey(Socket soc) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
+		InputStream is = soc.getInputStream();
+		DataInputStream dis = new DataInputStream(is);
+		int len = dis.readInt();
+
+		byte[] tab = new byte[len];
+
+		int wRead = 0;
+		while (wRead < len) {
+			wRead += dis.read(tab, wRead, len - wRead);
+		}
+
+		return new JobKey(tab);
 	}
 	/**
 	 * 

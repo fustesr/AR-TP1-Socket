@@ -2,5 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/Raph/Cours (Polytech)/4A/Workspace AR/TP1/TD_SOCKET/jus.aor.printing.client.jar"/>
+	<classpathentry kind="lib" path="D:/Raph/Cours (Polytech)/4A/Workspace AR/TP1/TD_SOCKET/jus.aor.printing.server.jar"/>
+	<classpathentry kind="lib" path="D:/Raph/Cours (Polytech)/4A/Workspace AR/TP1/TD_SOCKET/jus.util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

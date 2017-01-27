@@ -6,7 +6,7 @@ import java.net.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-import jus.aor.printing.Esclave.Slave;
+//import jus.aor.printing.Esclave.Slave;
 import jus.util.Formule;
 
 import static jus.aor.printing.Notification.*;
@@ -25,11 +25,14 @@ public class Server {
 	/** le nombre d'esclaves maximum du pool */
 	protected int poolSize = 10;
 	/** le contrôle d'arret du serveur */
-	protected boolean alive = false;
+	protected boolean alive = true;
 	/** le master server TCP socket */
 	protected ServerSocket serverTCPSoc;
 	/** le logger du server */
 	Logger log = Logger.getLogger("Jus.Aor.Printing.Server","jus.aor.printing.Server");
+	
+	private Thread server;
+	
 	/**
 	 * Construction du server d'impression
 	 */
@@ -45,10 +48,23 @@ public class Server {
 			serverTCPSoc = new ServerSocket(port, backlog);
 			Notification protocole=null;
 			log.log(Level.INFO_1,"Server.TCP.Started",new Object[] {port,backlog});
+			
 			while(alive) {
-				log.log(Level.INFO,"Server.TCP.Waiting");
+				log.log(Level.INFO_1,"Server.TCP.Waiting");
 				try{
-					//---------------------------------------------------------------------- A COMPLETER
+					soc = serverTCPSoc.accept();
+					System.out.println("Client " + soc.getInetAddress() + "connected."); 
+					log.log(Level.INFO_1,"Lecture de notif");
+					
+					protocole = TCP.readProtocole(soc);
+					
+					if (protocole == QUERY_PRINT){
+						TCP.writeProtocole(soc,REPLY_PRINT_OK);
+					} 
+					else {
+						TCP.writeProtocole(soc,REPLY_UNKNOWN_NOTIFICATION);
+					}
+					
 				}catch(SocketException e){
 						// socket has been closed, master serverTCP will stop.
 				}catch(ArrayIndexOutOfBoundsException e){
@@ -71,18 +87,26 @@ public class Server {
 	 * @param f
 	 * @see jus.aor.printing.Spooler#impressionTimeOfSize(jus.util.Formule)
 	 */
-	public void impressionTimeOfSize(Formule f){spooler.impressionTimeOfSize(f);}
+	//public void impressionTimeOfSize(Formule f){spooler.impressionTimeOfSize(f);}
 	/**
 	 * 
 	 */
-	void start(){
-		//---------------------------------------------------------------------- A COMPLETER
+	 void start(){
+	        alive = true;
+	        server = new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+	                runTCP();
+	            }
+	        });
+	        server.start();
 	}
 	/**
 	 * 
 	 */
 	public void stop(){
-		//---------------------------------------------------------------------- A COMPLETER		
+		// Methode pas encore faite
+		alive = false;	
 	}
 	/**
 	 * 
